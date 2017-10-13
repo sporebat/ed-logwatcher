@@ -338,14 +338,14 @@ if (!module.parent) {
 		throw new Error(err.stack || err);
 	});
 	watcher.on('data', obs => {
-		// obs.forEach(ob => {
-		// 	const {timestamp, event} = ob;
-		// 	console.log('\n' + timestamp, event);
-		// 	delete ob.timestamp;
-		// 	delete ob.event;
-		// 	Object.keys(ob).sort().forEach(k => {
-		// 		// console.log('\t' + k, ob[k]);
-		// 	});
-		// });
+		obs.forEach(ob => {
+			const {timestamp, event} = ob;
+			console.log('\n' + timestamp, event);
+			delete ob.timestamp;
+			delete ob.event;
+			Object.keys(ob).sort().forEach(k => {
+				// console.log('\t' + k, ob[k]);
+			});
+		});
 	});
 }
