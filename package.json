@@ -7,6 +7,8 @@
     "docs": "jsdoc -c ./conf.json -u example/",
     "dist": "babel src/ -o lib/index.js"
   },
+  "repository": "willyb321/ed-logwatcher",
+  "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
     "debug": "^3.1.0",
