@@ -16,7 +16,7 @@ import Raven from 'raven';
 
 const debug = debug0('ed-logwatcher');
 
-Raven.config('https://8f7736c757ed4d2882fc24a2846d1ce8:adbedad11d84421097182d6713727606@sentry.io/226655', {
+Raven.config('https://4032cf9202554211a705659a67b145cd:68ec3ebeac8d488298db8e224a9d4a2d@sentry.io/229768', {
 	release: require('../package.json').version,
 	autoBreadcrumbs: true
 }).install();
