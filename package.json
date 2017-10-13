@@ -1,6 +1,6 @@
 {
   "name": "ed-logwatcher",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Watch Elite: Dangerous journal files",
   "scripts": {
     "prepublish": "npm run dist",
