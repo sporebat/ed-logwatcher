@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Watch Elite: Dangerous journal files",
   "scripts": {
+    "prepublish": "npm run dist",
     "dist": "babel src/ -o lib/index.js"
   },
   "main": "lib/index.js",
