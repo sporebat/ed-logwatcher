@@ -37,7 +37,8 @@ const DEFAULT_SAVE_DIR = path.join(
 	'Elite Dangerous'
 );
 /**
- * @class
+ * @class The main class.
+ * @tutorial LogWatcher-Tutorial
  */
 export class LogWatcher extends events.EventEmitter {
 	/**
