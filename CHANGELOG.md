@@ -1,5 +1,10 @@
 ## Change Log
 
+### v0.2.3 (2017/10/13 06:43 +00:00)
+- [e2d49f1](https://github.com/willyb321/ed-logwatcher/commit/e2d49f1781466f30497aba367a431af699088d79) 0.2.3 (@willyb321)
+- [49c70e8](https://github.com/willyb321/ed-logwatcher/commit/49c70e8846dea2a0a11b3267d90c6d449e76a87d) package.json stuff (@willyb321)
+- [8a54411](https://github.com/willyb321/ed-logwatcher/commit/8a54411fb159e9583e4f2eb50aa9adbe88424dcc) changelog (@willyb321)
+
 ### v0.2.2 (2017/10/13 06:35 +00:00)
 - [96e778a](https://github.com/willyb321/ed-logwatcher/commit/96e778abf4bfb20461b4d6dce696eab8673acef9) 0.2.2 (@willyb321)
 - [1222795](https://github.com/willyb321/ed-logwatcher/commit/1222795f580b1e1e3873a2e1b26fe0dbe50b1be3) uncomment some stuff (@willyb321)
