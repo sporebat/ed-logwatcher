@@ -17,7 +17,7 @@ import Raven from 'raven';
 const debug = debug0('ed-logwatcher');
 
 Raven.config('https://8f7736c757ed4d2882fc24a2846d1ce8:adbedad11d84421097182d6713727606@sentry.io/226655', {
-	release: (!module.parent ? require('../package').version : require('electron').app.getVersion()),
+	release: require('../package.json').version,
 	autoBreadcrumbs: true
 }).install();
 
