@@ -10,7 +10,7 @@ npm i --save ed-logwatcher
 ```javascript
 // See https://edlogs.williamblythe.info for the JSDocs
 const {LogWatcher} = require('ed-logwatcher');
-const DEFAULT_SAVE_DIR = path.join(
+const DEFAULT_SAVE_DIR = require('path').join(
 	require('os').homedir(),
 	'Saved Games',
 	'Frontier Developments',

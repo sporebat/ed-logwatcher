@@ -10,7 +10,7 @@
 import events from 'events';
 import os from 'os';
 import path from 'path';
-import fs from 'fs-extra';
+import fs from 'fs';
 import debug0 from 'debug';
 import Raven from 'raven';
 

@@ -7,12 +7,14 @@
     "docs": "jsdoc -c ./conf.json -u example/",
     "dist": "babel src/ -o lib/index.js"
   },
+  "author": "Willyb321 <wbwilliam7@gmail.com>",
+  "bugs": "https://github.com/willyb321/ed-logwatcher/issues",
+  "keywords": ["elite", "dangerous", "ed", "journal", "file", "watcher", "poll"],
   "repository": "willyb321/ed-logwatcher",
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
     "debug": "^3.1.0",
-    "fs-extra": "^4.0.2",
     "raven": "^2.2.1"
   },
   "devDependencies": {
