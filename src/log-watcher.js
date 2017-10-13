@@ -188,7 +188,7 @@ export class LogWatcher extends events.EventEmitter {
 	 * @param callback {function}
 	 */
 	_process(filename, stats, callback) {
-		debug('_process', {filename, stats});
+		debug('_process', {filename});
 		let CURRENT_FILE = 0;
 		setImmediate(callback, null);
 		const info = this._logDetailMap[filename];
