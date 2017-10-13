@@ -9,7 +9,15 @@
   },
   "author": "Willyb321 <wbwilliam7@gmail.com>",
   "bugs": "https://github.com/willyb321/ed-logwatcher/issues",
-  "keywords": ["elite", "dangerous", "ed", "journal", "file", "watcher", "poll"],
+  "keywords": [
+    "elite",
+    "dangerous",
+    "ed",
+    "journal",
+    "file",
+    "watcher",
+    "poll"
+  ],
   "repository": "willyb321/ed-logwatcher",
   "license": "MIT",
   "main": "lib/index.js",
