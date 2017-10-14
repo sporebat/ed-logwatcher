@@ -16,7 +16,8 @@
     "journal",
     "file",
     "watcher",
-    "poll"
+    "poll",
+    "watch"
   ],
   "repository": "willyb321/ed-logwatcher",
   "license": "MIT",

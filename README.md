@@ -39,3 +39,15 @@ const watcher = new LogWatcher(DEFAULT_SAVE_DIR, 3);
 		});
 	});
 ```
+
+## Projects Using ed-logwatcher
+- https://github.com/willyb321/elite-journal
+
+## Contributing
+1. Fork
+2. Create branch (`git checkout -b my-branch`)
+3. Make changes
+4. Commit
+5. Open PR.
+6. ???
+7. Profit.
