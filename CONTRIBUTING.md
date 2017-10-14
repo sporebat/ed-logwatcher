@@ -1,4 +1,4 @@
-# Contributing to ed-logtwatcher
+# Contributing to ed-logwatcher
 
 1. Fork
 2. Create branch (`git checkout -b my-branch`)

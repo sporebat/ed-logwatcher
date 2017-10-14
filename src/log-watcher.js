@@ -12,14 +12,9 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import debug0 from 'debug';
-import Raven from 'raven';
 
 const debug = debug0('ed-logwatcher');
 
-Raven.config('https://4032cf9202554211a705659a67b145cd:68ec3ebeac8d488298db8e224a9d4a2d@sentry.io/229768', {
-	release: require('../package.json').version,
-	autoBreadcrumbs: true
-}).install();
 
 /**
  * Interval in MS to poll directory at.
@@ -57,8 +52,9 @@ export class LogWatcher extends events.EventEmitter {
 		this._op = null;
 		this._timer = null;
 		this._die = false;
-
+		this.stopped = false;
 		this._loop();
+		this.emit('Started');
 	}
 
 	/**
@@ -78,9 +74,11 @@ export class LogWatcher extends events.EventEmitter {
 
 		if (this._op === null) {
 			clearTimeout(this._timer);
+			this.stopped = true;
 			this.emit('stopped');
 		} else {
 			this._ops.splice(this._ops.length);
+			this.stopped = true;
 			this._die = true;
 		}
 	}
@@ -259,18 +257,11 @@ export class LogWatcher extends events.EventEmitter {
 		s.once('end', finish);
 
 		s.on('data', chunk => {
-			const sThis = this;
-			Raven.context(function () {
-				Raven.captureBreadcrumb({
-					data: {
-						chunk: chunk.toString()
-					}
-				});
 				const idx = chunk.lastIndexOf('\n');
 				if (idx < 0) {
 					leftover = Buffer.concat([leftover, chunk]);
 				} else {
-					sThis._logDetailMap[filename].watermark += idx + 1;
+					this._logDetailMap[filename].watermark += idx + 1;
 					try {
 						const obs = Buffer.concat([leftover, chunk.slice(0, idx + 1)])
 							.toString('utf8')
@@ -283,38 +274,23 @@ export class LogWatcher extends events.EventEmitter {
 									return JSON.parse(l)
 								} catch (e) {
 									debug('json.parse error', {line: l});
-									Raven.context(function () {
-										Raven.captureBreadcrumb({
-											message: 'File that crashed log watcher',
-											data: {
-												filename
-											}
-										});
-										Raven.captureBreadcrumb({
-											message: 'Log-watcher JSON.parse failed',
-											data: {
-												line: l,
-												chunk: chunk.toString()
-											}
-										});
-										Raven.captureException(e);
-									})
 								}
 							});
 						leftover = chunk.slice(idx + 1);
 						if (obs) {
-							setImmediate(() => sThis.emit('data', obs) && sThis.emit('finished'));
+							debug('data emit');
+							setImmediate(() => this.emit('data', obs) && this.emit('finished'));
 						} else {
-							setImmediate(() => sThis.emit('data', {}) && sThis.emit('finished'));
+                            debug('data emit');
+							setImmediate(() => this.emit('data', {}) && this.emit('finished'));
 						}
 					} catch (err) {
 						finish(err);
 					}
 				}
 			});
-		});
 	}
-	}
+}
 /**
  * Get the path of the logs.
  * @param fpath {string} Path to check.
