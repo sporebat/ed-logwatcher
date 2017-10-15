@@ -1,0 +1,32 @@
+{ "timestamp":"2016-11-12T21:44:58Z", "event":"Fileheader", "part":1, "language":"English\\UK", "gameversion":"2.2", "build":"r125374/r0 " }
+{ "timestamp":"2016-11-12T21:47:46Z", "event":"LoadGame", "Commander":"Willyb321", "Ship":"CobraMkIII", "ShipID":46, "GameMode":"Open", "Credits":126803834, "Loan":0 }
+{ "timestamp":"2016-11-12T21:47:46Z", "event":"Rank", "Combat":4, "Trade":5, "Explore":6, "Empire":7, "Federation":6, "CQC":1 }
+{ "timestamp":"2016-11-12T21:47:46Z", "event":"Progress", "Combat":51, "Trade":97, "Explore":34, "Empire":8, "Federation":1, "CQC":0 }
+{ "timestamp":"2016-11-12T21:48:23Z", "event":"Location", "Docked":true, "StationName":"Rorschach Horizons", "StationType":"Coriolis", "StarSystem":"Na Chem", "StarPos":[3.344,64.031,76.219], "Allegiance":"Independent", "Economy":"$economy_HighTech;", "Economy_Localised":"High tech", "Government":"$government_Democracy;", "Government_Localised":"Democracy", "Security":"$SYSTEM_SECURITY_medium;", "Security_Localised":"Medium Security", "Body":"Rorschach Horizons", "BodyType":"Station", "Faction":"Radio Sidewinder Crew", "FactionState":"Boom" }
+{ "timestamp":"2016-11-12T21:48:23Z", "event":"Docked", "StationName":"Rorschach Horizons", "StationType":"Coriolis", "StarSystem":"Na Chem", "Faction":"Radio Sidewinder Crew", "FactionState":"Boom", "Allegiance":"Independent", "Economy":"$economy_HighTech;", "Economy_Localised":"High tech", "Government":"$government_Democracy;", "Government_Localised":"Democracy", "Security":"$SYSTEM_SECURITY_medium;", "Security_Localised":"Medium Security" }
+{ "timestamp":"2016-11-12T21:48:55Z", "event":"Undocked", "StationName":"Rorschach Horizons", "StationType":"Coriolis" }
+{ "timestamp":"2016-11-12T21:49:29Z", "event":"ReceiveText", "From":"Rorschach Horizons", "Message":"$STATION_NoFireZone_exited;", "Message_Localised":"No fire zone left.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:50:02Z", "event":"ReceiveText", "From":"Rorschach Horizons", "Message":"$STATION_NoFireZone_entered;", "Message_Localised":"No fire zone entered.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:50:10Z", "event":"ReceiveText", "From":"Rorschach Horizons", "Message":"$STATION_NoFireZone_exited;", "Message_Localised":"No fire zone left.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:50:39Z", "event":"SupercruiseEntry", "StarSystem":"Na Chem" }
+{ "timestamp":"2016-11-12T21:51:05Z", "event":"USSDrop", "USSType":"$USS_Type_WeaponsFire;", "USSType_Localised":"Weapons fire detected", "USSThreat":1 }
+{ "timestamp":"2016-11-12T21:51:08Z", "event":"SupercruiseExit", "StarSystem":"Na Chem", "Body":"Na Chem 1", "BodyType":"Planet" }
+{ "timestamp":"2016-11-12T21:51:18Z", "event":"ReceiveText", "From":"$npc_name_decorate:#name=Alexandru Linte;", "From_Localised":"Alexandru Linte", "Message":"$Pirate_Arrival03;", "Message_Localised":"Judgement time!", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:51:33Z", "event":"SupercruiseEntry", "StarSystem":"Na Chem" }
+{ "timestamp":"2016-11-12T21:52:40Z", "event":"SupercruiseExit", "StarSystem":"Na Chem", "Body":"Na Chem 1", "BodyType":"Planet" }
+{ "timestamp":"2016-11-12T21:55:26Z", "event":"SupercruiseEntry", "StarSystem":"Na Chem" }
+{ "timestamp":"2016-11-12T21:56:49Z", "event":"FSDJump", "StarSystem":"Tachmetae", "StarPos":[-0.594,60.688,84.719], "Allegiance":"Federation", "Economy":"$economy_Industrial;", "Economy_Localised":"Industrial", "Government":"$government_Democracy;", "Government_Localised":"Democracy", "Security":"$SYSTEM_SECURITY_high;", "Security_Localised":"High Security", "JumpDist":9.947, "FuelUsed":0.472287, "FuelLevel":15.527713, "Faction":"Tachmetae Future" }
+{ "timestamp":"2016-11-12T21:57:17Z", "event":"FuelScoop", "Scooped":0.472287, "Total":16.000000 }
+{ "timestamp":"2016-11-12T21:58:12Z", "event":"SupercruiseExit", "StarSystem":"Tachmetae", "Body":"Bresnik Station", "BodyType":"Station" }
+{ "timestamp":"2016-11-12T21:58:20Z", "event":"DockingRequested", "StationName":"Bresnik Station" }
+{ "timestamp":"2016-11-12T21:58:20Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$DockingChatter_Neutral;", "Message_Localised":"Ensure to observe starport protocol during your visit, pilot.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:58:21Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$STATION_docking_granted;", "Message_Localised":"Docking request granted.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:58:21Z", "event":"DockingGranted", "LandingPad":1, "StationName":"Bresnik Station" }
+{ "timestamp":"2016-11-12T21:58:30Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$STATION_NoFireZone_entered;", "Message_Localised":"No fire zone entered.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T21:59:02Z", "event":"Docked", "StationName":"Bresnik Station", "StationType":"Coriolis", "StarSystem":"Tachmetae", "Faction":"Tachmetae Future", "Allegiance":"Federation", "Economy":"$economy_Industrial;", "Economy_Localised":"Industrial", "Government":"$government_Democracy;", "Government_Localised":"Democracy", "Security":"$SYSTEM_SECURITY_high;", "Security_Localised":"High Security" }
+{ "timestamp":"2016-11-12T21:59:36Z", "event":"RefuelAll", "Cost":10, "Amount":0.187542 }
+{ "timestamp":"2016-11-12T22:03:58Z", "event":"ReceiveText", "From":"$npc_name_decorate:#name=Patryn Condor;", "From_Localised":"Patryn Condor", "Message":"$Commuter_AuthorityScan02;", "Message_Localised":"How can I be of assistance?", "Channel":"npc" }
+{ "timestamp":"2016-11-12T22:12:17Z", "event":"Undocked", "StationName":"Bresnik Station", "StationType":"Coriolis" }
+{ "timestamp":"2016-11-12T22:12:38Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$DockingTresspassWarningComms;", "Message_Localised":"Unauthorised access infraction detected, clear starport immediately to avoid lethal response", "Channel":"npc" }
+{ "timestamp":"2016-11-12T22:12:45Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$DockingOffenceCleared;", "Message_Localised":"Starport infractions cleared, docking privileges restored.", "Channel":"npc" }
+{ "timestamp":"2016-11-12T22:12:47Z", "event":"ReceiveText", "From":"Bresnik Station", "Message":"$STATION_NoFireZone_exited;", "Message_Localised":"No fire zone left.", "Channel":"npc" }
