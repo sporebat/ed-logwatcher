@@ -42,6 +42,7 @@ const watcher = new LogWatcher(DEFAULT_SAVE_DIR, 3);
 
 ## Projects Using ed-logwatcher
 - https://github.com/willyb321/elite-journal
+- https://github.com/purrcat259/ed-fleet-client
 
 ## Contributing
 1. Fork
