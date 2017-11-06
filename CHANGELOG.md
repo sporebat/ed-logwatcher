@@ -1,5 +1,30 @@
 ## Change Log
 
+### v1.4.0 (2017/11/06 01:33 +00:00)
+- [597f4ae](https://github.com/willyb321/ed-logwatcher/commit/597f4aeb1a8253c02aa14c70702892ff689f3be3) v1.4.0 (@willyb321)
+- [b1dca0c](https://github.com/willyb321/ed-logwatcher/commit/b1dca0c33dbc204b3946e7dae92367d62b0a3f32) Merge branch 'release/1.4.0' (@willyb321)
+- [5cec0b4](https://github.com/willyb321/ed-logwatcher/commit/5cec0b4b994dec7593a1c8baf199c2eb808f51f8) add ignoreInitial parameter, @types, and a test (@willyb321)
+- [f115960](https://github.com/willyb321/ed-logwatcher/commit/f115960c96b2cee191c74571a04ea3acfcd3946d) update projects using (@willyb321)
+- [bd0daf5](https://github.com/willyb321/ed-logwatcher/commit/bd0daf554319f0169c904421df3b159b3184d00c) add test logs (@willyb321)
+
+### v0.3.1 (2017/10/14 06:22 +00:00)
+- [b67ec77](https://github.com/willyb321/ed-logwatcher/commit/b67ec77dd73054110f6a92819394cb860cbdfed6) 0.3.1 (@willyb321)
+- [149206f](https://github.com/willyb321/ed-logwatcher/commit/149206f41cb8cbfec558c9b9d4dc1021b19704c2) update dist (@willyb321)
+- [2a5bef1](https://github.com/willyb321/ed-logwatcher/commit/2a5bef12786bf8e7ebdf8ae20e25026c79965fd5) Remove raven, add some tests, stuff (@willyb321)
+- [f50f2f3](https://github.com/willyb321/ed-logwatcher/commit/f50f2f35e51b1a50a962cabda03d34592386c7a9) add code of conduct, update readme, etc (@willyb321)
+- [d7349f3](https://github.com/willyb321/ed-logwatcher/commit/d7349f3f0e5573429d707a2cb5ce4715ed11a380) dont spam console with stats (@willyb321)
+- [f72531f](https://github.com/willyb321/ed-logwatcher/commit/f72531f33e0650bb63c327c6e38ecf6c797b6677) update package-lock.json (@willyb321)
+- [3c26008](https://github.com/willyb321/ed-logwatcher/commit/3c26008a08ed5560decc63d7b1f63e160884255c) Merge remote-tracking branch 'origin/master' (@willyb321)
+- [5c9c662](https://github.com/willyb321/ed-logwatcher/commit/5c9c662129164ac30fe24ca96015a4b5e4df431c) remove fs-extra dep (@willyb321)
+
+### v0.3.0 (2017/10/13 12:08 +00:00)
+- [4cbfda8](https://github.com/willyb321/ed-logwatcher/commit/4cbfda858d6cc1ea5c4ca81a71663d7f366e422c) 0.3.0 (@willyb321)
+
+### v0.2.4 (2017/10/13 12:06 +00:00)
+- [cc3458c](https://github.com/willyb321/ed-logwatcher/commit/cc3458c9d2e4d990fd94627fb4b60f9e31a30003) 0.2.4 (@willyb321)
+- [7883f32](https://github.com/willyb321/ed-logwatcher/commit/7883f3233989bab4e0cb6c128533fd963f6952dd) upd8 (@willyb321)
+- [84d9de1](https://github.com/willyb321/ed-logwatcher/commit/84d9de165c2d1258cee1fb623228fc5a5a2101b1) changelog (@willyb321)
+
 ### v0.2.3 (2017/10/13 06:43 +00:00)
 - [e2d49f1](https://github.com/willyb321/ed-logwatcher/commit/e2d49f1781466f30497aba367a431af699088d79) 0.2.3 (@willyb321)
 - [49c70e8](https://github.com/willyb321/ed-logwatcher/commit/49c70e8846dea2a0a11b3267d90c6d449e76a87d) package.json stuff (@willyb321)
