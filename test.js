@@ -36,3 +36,10 @@ test.cb.serial('Stops', t => {
 	});
 });
 
+test.cb.serial('Starts but doesn\'t emit', t => {
+	Watcher = new LogWatcher(DEFAULT_SAVE_DIR, 4, true);
+	setTimeout(() => {
+		t.pass();
+		t.end();
+	}, 5000);
+});
