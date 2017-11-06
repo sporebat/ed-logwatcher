@@ -40,8 +40,9 @@ export class LogWatcher extends events.EventEmitter {
 	 * Construct the log watcher.
 	 * @param dirpath {string} The directory to watch.
 	 * @param maxfiles {number} Maximum amount of files to process.
+	 * @param ignoreInitial {boolean} Ignore initial read or not.
 	 */
-	constructor(dirpath, maxfiles) {
+	constructor(dirpath, maxfiles, ignoreInitial) {
 		super();
 
 		this._dirpath = dirpath || DEFAULT_SAVE_DIR;
@@ -50,8 +51,10 @@ export class LogWatcher extends events.EventEmitter {
 		this._logDetailMap = {};
 		this._ops = [];
 		this._op = null;
+		this._startTime = new Date();
 		this._timer = null;
 		this._die = false;
+		this._ignoreInitial = ignoreInitial || false;
 		this.stopped = false;
 		this._loop();
 		this.emit('Started');
@@ -190,7 +193,9 @@ export class LogWatcher extends events.EventEmitter {
 		let CURRENT_FILE = 0;
 		setImmediate(callback, null);
 		const info = this._logDetailMap[filename];
-
+		if (this._ignoreInitial && stats.mtime < this._startTime) {
+			return
+		}
 		if (info === undefined && CURRENT_FILE < this._maxfiles) {
 			this._logDetailMap[filename] = {
 				ino: stats.ino,
@@ -307,7 +312,7 @@ if (!module.parent) {
 		throw new Error(err.stack || err);
 	});
 
-	const watcher = new LogWatcher(DEFAULT_SAVE_DIR, 3);
+	const watcher = new LogWatcher(DEFAULT_SAVE_DIR, 3, true);
 	watcher.on('error', err => {
 		watcher.stop();
 		console.error(err.stack || err);

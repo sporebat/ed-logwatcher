@@ -28,6 +28,9 @@
     "supports-color": "^4.4.0"
   },
   "devDependencies": {
+    "@types/debug": "^0.0.30",
+    "@types/node": "^8.0.47",
+    "@types/supports-color": "^3.1.0",
     "ava": "^0.22.0",
     "babel-cli": "^7.0.0-beta.2",
     "babel-preset-env": "^2.0.0-beta.2",
