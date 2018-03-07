@@ -141,14 +141,15 @@ export class LogWatcher extends events.EventEmitter {
 			if (err) {
 				callback(err);
 			} else {
-				const files = filenames.slice(filenames.length - this._maxfiles, filenames.length);
-				files.forEach(filename => {
-					filename = path.join(this._dirpath, filename);
+				let counter = this._maxfiles;
+				for (let i = filenames.length - 1; i >= 0 && counter; i--) {
+					let filename = path.join(this._dirpath, filenames[i]);
 					if (this._filter(filename)) {
+						counter--;
 						delete unseen[filename];
 						this._ops.push(cb => this._statfile(filename, cb));
 					}
-				});
+				}
 
 				Object.keys(unseen).forEach(filename => {
 					this.bury(filename);
