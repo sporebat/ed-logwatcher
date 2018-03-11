@@ -21,7 +21,7 @@
   ],
   "repository": "willyb321/ed-logwatcher",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "src/log-watcher.js",
   "dependencies": {
     "debug": "^3.1.0"
   },

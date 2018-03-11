@@ -3,18 +3,18 @@
  * @author willyb321
  * @copyright MIT
  */
-/**
+
+ /**
  * @module Watcher
  */
 'use strict';
-import events from 'events';
-import os from 'os';
-import path from 'path';
-import fs from 'fs';
-import debug0 from 'debug';
 
-const debug = debug0('ed-logwatcher');
-
+const events = require('events');
+const os = require('os');
+const path = require('path');
+const fs = require('fs');
+const debug = require('debug')('ed-logwatcher');
+const chokidar = require('chokidar');
 
 /**
  * Interval in MS to poll directory at.
@@ -31,289 +31,189 @@ const DEFAULT_SAVE_DIR = path.join(
 	'Frontier Developments',
 	'Elite Dangerous'
 );
+
 /**
  * @class The main class.
+ *
  * @tutorial LogWatcher-Tutorial
  */
-export class LogWatcher extends events.EventEmitter {
+class LogWatcher extends events.EventEmitter {
 	/**
 	 * Construct the log watcher.
+	 *
 	 * @param dirpath {string} The directory to watch.
-	 * @param maxfiles {number} Maximum amount of files to process.
-	 * @param ignoreInitial {boolean} Ignore initial read or not.
 	 */
-	constructor(dirpath, maxfiles, ignoreInitial) {
+	constructor(dirpath) {
 		super();
 
 		this._dirpath = dirpath || DEFAULT_SAVE_DIR;
-		this._filter = isCommanderLog;
-		this._maxfiles = maxfiles || 3;
-		this._logDetailMap = {};
+		this._offsets = {};
 		this._ops = [];
 		this._op = null;
 		this._startTime = new Date();
-		this._timer = null;
-		this._die = false;
-		this._ignoreInitial = ignoreInitial || false;
-		this.stopped = false;
-		this._loop();
-		this.emit('Started');
+		this._watcher = null;
+		this.stopped = true;
 	}
 
 	/**
-	 * Bury a file
-	 * @param filename {string} File to bury.
-	 */
-	bury(filename) {
-		debug('bury', {filename});
-		this._logDetailMap[filename].tombstoned = true;
-	}
-
-	/**
-	 * Stop running
+ 	 * Stop running
 	 */
 	stop() {
 		debug('stop');
-
-		if (this._op === null) {
-			clearTimeout(this._timer);
+		if (!this.stopped) {
+			this._watcher.close();
+			this._watcher = null;
 			this.stopped = true;
-			this.emit('stopped');
-		} else {
-			this._ops.splice(this._ops.length);
-			this.stopped = true;
-			this._die = true;
+			this.emit('stop');
 		}
 	}
 
 	/**
-	 * The main loop
+	 * Start running
 	 */
-	_loop() {
-		debug('_loop', {opcount: this._ops.length});
-
-		this._op = null;
-
-		if (this._ops.length === 0) {
-			this._timer = setTimeout(() => {
-				this._ops.push(callback => this._poll(callback));
-				setImmediate(() => this._loop());
-			}, POLL_INTERVAL);
-			return;
-		}
-
-		this._op = this._ops.shift();
-
-		try {
-			this._op(err => {
-				if (err) {
-					this.emit('error', err);
-				} else if (this._die) {
-					this.emit('stopped');
-				} else {
-					setImmediate(() => this._loop());
-				}
-			});
-		} catch (err) {
-			this.emit('error', err);
-				// Assumption: it crashed BEFORE an async wait
-				// otherwise, we'll end up with more simultaneous
-				// activity
-			setImmediate(() => this._loop());
+	start() {
+		debug('start');
+		if (this.stopped) {
+			this._watch();
+			this.stopped = false;
+			this.emit('start', this._dirpath);
 		}
 	}
 
 	/**
-	 * Poll the logs directory for new/updated files.
-	 * @param callback {function}
+	 * Start watching the saved game directory.
 	 */
-	_poll(callback) {
-		debug('_poll');
-
-		const unseen = {};
-		Object.keys(this._logDetailMap).forEach(filename => {
-			if (!this._logDetailMap[filename].tombstoned) {
-				unseen[filename] = true;
-			}
+	_watch() {
+		debug('_watch', this._dirpath);
+		const watcher = this._watcher = chokidar.watch(this._dirpath, {
+			alwaysStat: true,
+			atomic: false,
+			depth: 0,
+			ignoreInitial: true,
 		});
-
-		fs.readdir(this._dirpath, (err, filenames) => {
-			if (err) {
-				callback(err);
-			} else {
-				let counter = this._maxfiles;
-				for (let i = filenames.length - 1; i >= 0 && counter; i--) {
-					let filename = path.join(this._dirpath, filenames[i]);
-					if (this._filter(filename)) {
-						counter--;
-						delete unseen[filename];
-						this._ops.push(cb => this._statfile(filename, cb));
-					}
-				}
-
-				Object.keys(unseen).forEach(filename => {
-					this.bury(filename);
-				});
-
-				callback(null);
-			}
-		});
+		watcher.on('unlink', f => this._wunlinked(f));
+		watcher.on('add', f => this._wadded(f));
+		watcher.on('change', f => this._wchanged(f));
 	}
 
 	/**
-	 * Stat the new/updated files in log directory
-	 * @param filename {string} Path to file to get stats of.
-	 * @param callback
+	 * Handle notification of a deleted file.
+	 *
+	 * @param {string} filename The path to the deleted file
 	 */
-	_statfile(filename, callback) {
-		debug('_statfile', {filename});
-
-		fs.stat(filename, (err, stats) => {
-			if (err && err.code === 'ENOENT') {
-				if (this._logDetailMap[filename]) {
-					this.bury(filename);
-				}
-				callback(null); // File deleted
-			} else if (err) {
-				callback(err);
-			} else {
-				this._ops.push(cb => this._process(filename, stats, cb));
-				callback(null);
-			}
-		});
+	_wunlinked(filename) {
+		debug('_wunlinked', filename);
+		delete this._offsets[filename];
 	}
 
 	/**
-	 * Process the files
-	 * @param filename {string} Filename to check
-	 * @param stats {object} Last modified etc
-	 * @param callback {function}
+	 * Handle notification of an added file.
+	 *
+	 * @param {string} filename The path to the added file
 	 */
-	_process(filename, stats, callback) {
-		debug('_process', {filename});
-		let CURRENT_FILE = 0;
-		setImmediate(callback, null);
-		const info = this._logDetailMap[filename];
-		if (this._ignoreInitial && stats.mtime < this._startTime) {
-			return
-		}
-		if (info === undefined && CURRENT_FILE < this._maxfiles) {
-			this._logDetailMap[filename] = {
-				ino: stats.ino,
-				mtime: stats.mtime,
-				size: stats.size,
-				watermark: 0,
-				tombstoned: false
-			};
-			CURRENT_FILE++;
-			this._ops.push(cb => this._read(filename, cb));
-			return;
-		}
-
-		if (info.tombstoned) {
-			return;
-		}
-
-		if (info.ino !== stats.ino) {
-				// File replaced... can't trust it any more
-				// if the client API supported replay from scratch, we could do that
-				// but we can't yet, so:
-			CURRENT_FILE = 0;
-			this.bury(filename);
-		} else if (stats.size > info.size) {
-				// File not replaced; got longer... assume append
-			this._ops.push(cb => this._read(filename, cb));
-		} else if (info.ino === stats.ino && info.size === stats.size) {
-				// Even if mtime is different, treat it as unchanged
-				// e.g. ^Z when COPY CON to a fake log
-				// don't queue read
-		}
-
-		info.mtime = stats.mtime;
-		info.size = stats.size;
+	_wadded(filename) {
+		debug('_wadded', filename);
+		this._read(filename);
 	}
 
 	/**
-	 * Read the files
+	 * Handle notification of an changed file.
+	 *
+	 * @param {string} filename The path to the changed file
+	 */
+	_wchanged(filename) {
+		debug('_wchanged', filename);
+		this._read(filename);
+	}
+
+	/**
+	 * Read a file's content, and emit events appropriately.
+	 *
 	 * @param filename {string} The filename to read.
-	 * @param callback {function}
 	 */
-	_read(filename, callback) {
-		const {watermark, size} = this._logDetailMap[filename];
-		debug('_read', {filename, watermark, size});
+	_read(filename) {
+		const watermark = this._getWatermark(filename);
+		this._offsets[filename] = watermark;
+		debug('_read', filename, watermark);
 		let leftover = Buffer.from('', 'utf8');
 
 		const s = fs.createReadStream(filename, {
 			flags: 'r',
 			start: watermark,
-			end: size
+//			end: size
 		});
 		const finish = err => {
 			if (err) {
-					// On any error, emit the error and bury the file.
+				// On any error, emit the error and bury the file.
 				this.emit('error', err);
-				this.bury(filename);
 			}
-			setImmediate(callback, null);
-			callback = () => {
-			}; // No-op
 		};
 		s.once('error', finish);
-
 		s.once('end', finish);
-
 		s.on('data', chunk => {
-				const idx = chunk.lastIndexOf('\n');
-				if (idx < 0) {
-					leftover = Buffer.concat([leftover, chunk]);
-				} else {
-					this._logDetailMap[filename].watermark += idx + 1;
-					try {
-						const obs = Buffer.concat([leftover, chunk.slice(0, idx + 1)])
-							.toString('utf8')
-							.replace(/\u000e/igm, '')
-							.replace(/\u000f/igm, '')
-							.split(/[\r\n]+/)
-							.filter(l => l.length > 0)
-							.map(l => {
-								try {
-									return JSON.parse(l)
-								} catch (e) {
-									debug('json.parse error', {line: l});
-								}
-							});
-						leftover = chunk.slice(idx + 1);
-						if (obs) {
-							debug('data emit');
-							setImmediate(() => this.emit('data', obs) && this.emit('finished'));
-						} else {
-                            debug('data emit');
-							setImmediate(() => this.emit('data', {}) && this.emit('finished'));
-						}
-					} catch (err) {
-						finish(err);
+			debug('data', chunk.byteLength)
+			const idx = chunk.lastIndexOf('\n');
+			if (idx < 0) {
+				leftover = Buffer.concat([leftover, chunk]);
+			} else {
+				this._offsets[filename] += idx + 1;
+				try {
+					const obs = Buffer.concat([leftover, chunk.slice(0, idx + 1)])
+						.toString('utf8')
+						.replace(/\u000e/igm, '')
+						.replace(/\u000f/igm, '')
+						.split(/[\r\n]+/)
+						.filter(l => l.length > 0)
+						.map(l => {
+							try {
+								return JSON.parse(l)
+							} catch (e) {
+								debug('json.parse error', {line: l});
+							}
+						});
+					leftover = chunk.slice(idx + 1);
+					if (obs) {
+						debug('data emit');
+						setImmediate(() => this.emit('data', obs) && this.emit('finished'));
+					} else {
+						debug('data emit');
+						setImmediate(() => this.emit('data', {}) && this.emit('finished'));
 					}
+				} catch (err) {
+					finish(err);
 				}
-			});
+			}
+		});
+	}
+
+	/**
+	 * Get our current offset into a file.
+	 */
+	_getWatermark(filename) {
+		if (path.extname(filename).toLowerCase() === '.json') {
+			return 0;
+		} else {
+			return  this._offsets[filename] || 0;;
+		}
 	}
 }
-/**
- * Get the path of the logs.
- * @param fpath {string} Path to check.
- * @returns {boolean} True if the directory contains journal files.
- */
-function isCommanderLog(fpath) {
-	const base = path.basename(fpath);
-	return base.indexOf('Journal.') === 0 && path.extname(fpath) === '.log';
+
+module.exports = {
+	DEFAULT_SAVE_DIR,
+	LogWatcher,
 }
 
 if (!module.parent) {
+	debug('acting as crude CLI...');
 	process.on('uncaughtException', err => {
 		console.error(err.stack || err);
 		throw new Error(err.stack || err);
 	});
 
-	const watcher = new LogWatcher(DEFAULT_SAVE_DIR, 3, true);
+	const watcher = new LogWatcher(DEFAULT_SAVE_DIR);
+	watcher.on('start', dpath => {
+		console.error(`Watching: ${dpath}`);
+	});
 	watcher.on('error', err => {
 		watcher.stop();
 		console.error(err.stack || err);
@@ -330,4 +230,5 @@ if (!module.parent) {
 			});
 		});
 	});
+	watcher.start();
 }
