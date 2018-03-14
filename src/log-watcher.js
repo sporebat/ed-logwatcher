@@ -15,6 +15,8 @@ const path = require('path');
 const fs = require('fs');
 const debug = require('debug')('ed-logwatcher');
 const chokidar = require('chokidar');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
 
 /**
  * Interval in MS to poll directory at.
@@ -132,58 +134,65 @@ class LogWatcher extends events.EventEmitter {
 	 * @param filename {string} The filename to read.
 	 */
 	_read(filename) {
-		const watermark = this._getWatermark(filename);
-		this._offsets[filename] = watermark;
-		debug('_read', filename, watermark);
-		let leftover = Buffer.from('', 'utf8');
+		if (path.extname(filename) === '.json') {
+			this._readSingle(filename).catch(err => this.emit('error', err));
+			return;
+		} else {
+			this._readMany(filename).catch(err => this.emit('error', err));
+			return;
+		}
+	}
 
-		const s = fs.createReadStream(filename, {
-			flags: 'r',
-			start: watermark,
-//			end: size
-		});
-		const finish = err => {
-			if (err) {
-				// On any error, emit the error and bury the file.
-				this.emit('error', err);
-			}
-		};
-		s.once('error', finish);
-		s.once('end', finish);
-		s.on('data', chunk => {
-			debug('data', chunk.byteLength)
-			const idx = chunk.lastIndexOf('\n');
-			if (idx < 0) {
-				leftover = Buffer.concat([leftover, chunk]);
-			} else {
-				this._offsets[filename] += idx + 1;
+	/**
+	 * Read a file's content, expecting just one JSON blob, and emit events.
+	 *
+	 * @param filename {string} The filename to read.
+	 */
+	async _readSingle(filename) {
+		debug('readSingle', filename);
+		const text = await readFile(filename, 'utf8');
+		if (!text) {
+			return;
+		}
+
+		let ob;
+		try {
+			ob = JSON.parse(text);
+		} catch (err) {
+			debug('json parse failure', text.length, text);
+			return;
+		}
+		this.emit('data', [ob]);
+		this.emit('finished');
+	}
+
+	/**
+	 * Read a file's content, expecting many newline separated JSON blobs,
+	 * and emit events.
+	 *
+	 * @param filename {string} The filename to read.
+	 */
+	async _readMany(filename) {
+		debug('_readMany', filename);
+		const watermark = this._offsets[filename] || 0;
+		const buffer = (await readFile(filename)).slice(watermark);
+		this._offsets[filename] = watermark + buffer.byteLength;
+		const obs = buffer.toString('utf8')
+			.toString('utf8')
+			.replace(/\u000e/igm, '')
+			.replace(/\u000f/igm, '')
+			.split(/[\r\n]+/)
+			.filter(text => !!text)
+			.map(text => {
 				try {
-					const obs = Buffer.concat([leftover, chunk.slice(0, idx + 1)])
-						.toString('utf8')
-						.replace(/\u000e/igm, '')
-						.replace(/\u000f/igm, '')
-						.split(/[\r\n]+/)
-						.filter(l => l.length > 0)
-						.map(l => {
-							try {
-								return JSON.parse(l)
-							} catch (e) {
-								debug('json.parse error', {line: l});
-							}
-						});
-					leftover = chunk.slice(idx + 1);
-					if (obs) {
-						debug('data emit');
-						setImmediate(() => this.emit('data', obs) && this.emit('finished'));
-					} else {
-						debug('data emit');
-						setImmediate(() => this.emit('data', {}) && this.emit('finished'));
-					}
-				} catch (err) {
-					finish(err);
+					return JSON.parse(text)
+				} catch (e) {
+					debug('json parse failure', text.length, text);
 				}
-			}
-		});
+			})
+			.filter(ob => !!ob);
+		this.emit('data', obs);
+		this.emit('finished');
 	}
 
 	/**
@@ -215,13 +224,17 @@ if (!module.parent) {
 		console.error(`Watching: ${dpath}`);
 	});
 	watcher.on('error', err => {
-		watcher.stop();
+		// watcher.stop();
 		console.error(err.stack || err);
-		throw new Error(err.stack || err);
+		console.error('keeping going...');
+		// throw new Error(err.stack || err);
 	});
 	watcher.on('data', obs => {
 		obs.forEach(ob => {
 			const {timestamp, event} = ob;
+			if (!(timestamp && event)) {
+				console.log('\n what', ob);
+			}
 			console.log('\n' + timestamp, event);
 			delete ob.timestamp;
 			delete ob.event;
